@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, date, timedelta
 from functools import wraps
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Count, Q
+from django.conf import settings
 from .models import (
     User, Department, Course, Student, Registration,
     Attendance, Election, ElectionPosition, Candidate, Vote
@@ -39,7 +41,19 @@ def home(request):
         'active_elections': Election.objects.filter(is_active=True).count(),
         'total_attendances': Attendance.objects.count(),
     }
-    return render(request, 'home.html', {'stats': stats})
+    readme_content = ""
+    readme_path = os.path.join(settings.BASE_DIR, 'README.md')
+    try:
+        if os.path.exists(readme_path):
+            with open(readme_path, 'r', encoding='utf-8') as f:
+                readme_content = f.read()
+    except Exception:
+        readme_content = ""
+
+    return render(request, 'home.html', {
+        'stats': stats,
+        'readme_content': readme_content,
+    })
 
 
 def about(request):
