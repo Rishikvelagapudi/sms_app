@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Courses{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title mb-0">Available Courses</h4>
+    {% if request.user.is_authenticated and request.user.role == 'admin' %}
+    <a href="{% url 'add_course' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Course</a>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% for c in courses %}
+    <div class="col-md-4">
+        <div class="card course-card p-3">
+            <div class="d-flex justify-content-between">
+                <span class="badge badge-dept">{{ c.department.code }}</span>
+                <span class="badge bg-secondary">{{ c.credits }} credits</span>
+            </div>
+            <h5 class="mt-2">{{ c.name }}</h5>
+            <p class="text-muted small mb-1">Code: {{ c.code }} &middot; {{ c.duration_weeks }} weeks</p>
+            <p class="small">{{ c.description|truncatechars:90 }}</p>
+            <p class="small text-muted mb-2"><i class="bi bi-people me-1"></i>{{ c.enrolled_count }} enrolled</p>
+            <a href="{% url 'course_detail' c.id %}" class="btn btn-primary btn-sm mt-auto">View & Register</a>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted text-center py-4">No courses available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

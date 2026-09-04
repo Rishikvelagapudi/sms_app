@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Create Election — Admin{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_elections' %}">Elections Control</a></li>
+                    <li class="breadcrumb-item active">New Election</li>
+                </ol>
+            </nav>
+            <a href="{% url 'admin_elections' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h4 class="fw-bold mb-0 text-dark"><i class="bi bi-plus-circle text-primary me-2"></i>Create New Election</h4>
+                <p class="text-muted small mb-0">Set up election details, schedule voting periods, and configure positions.</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-semibold">Election Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="e.g. Student Council General Elections 2026" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-semibold">Description &amp; Guidelines</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Brief introduction and eligibility requirements for voters..."></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label fw-semibold">Voting Starts <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="start_date" name="start_date" value="{{ default_start }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label fw-semibold">Voting Ends <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="end_date" name="end_date" value="{{ default_end }}" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{% url 'admin_elections' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-lg me-1"></i>Create &amp; Configure Positions
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

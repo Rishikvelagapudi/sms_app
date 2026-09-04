@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card auth-card">
+    <h3 class="section-title">Login</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" required autofocus>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+    <p class="text-center mt-3 mb-0">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+    <hr>
+    <p class="text-muted small mb-0 text-center">Demo admin login: <strong>admin</strong> / <strong>admin123</strong></p>
+</div>
+{% endblock %}

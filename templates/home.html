@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block hero %}
+<!-- Full-Width Hero: Happy Teachers' Day Tribute Banners + Center Video -->
+<div class="teachers-day-hero-wrapper">
+    <div class="container-fluid px-3 px-xl-4">
+        <div class="row g-3 align-items-stretch justify-content-center">
+            <!-- Left Side: Happy Teachers' Day Tribute Banner -->
+            <div class="col-xl-2 col-lg-3 d-none d-lg-block">
+                <div class="teachers-card p-3 text-center">
+                    <div>
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold font-monospace shadow-sm mb-3">
+                            <i class="bi bi-calendar-check me-1"></i>Sept 5
+                        </span>
+                        <div class="my-2">
+                            <i class="bi bi-mortarboard-fill display-4 text-warning"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-1" style="letter-spacing: -0.3px;">Happy Teachers' Day!</h4>
+                        <span class="text-warning small fw-semibold">Honoring Our Mentors</span>
+                        <div class="festive-divider my-3"></div>
+                        <p class="small text-white-50 mb-3 fst-italic">
+                            &ldquo;A teacher affects eternity; they can never tell where their influence stops.&rdquo;
+                        </p>
+                    </div>
+                    <div class="mt-auto pt-2">
+                        <div class="p-2 rounded bg-white bg-opacity-10 border border-warning border-opacity-25 small text-white-50">
+                            <i class="bi bi-heart-fill text-danger me-1"></i>Dedicated with highest respect to all our beloved Faculty.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Campus Video (100% Visible, Uncropped, Looping, Permanently Muted) -->
+            <div class="col-xl-8 col-lg-6 col-12">
+                <div class="video-center-container h-100 d-flex align-items-center justify-content-center p-1 bg-white">
+                    <video id="campusVideo"
+                           class="w-100 d-block rounded-4"
+                           style="width: 100%; height: auto; max-height: 80vh; object-fit: contain; background: #ffffff;"
+                           autoplay
+                           muted
+                           loop
+                           playsinline
+                           disablePictureInPicture>
+                        <source src="{% static 'videos/campus_tour.mp4' %}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Right Side: Special Gratitude & Appreciation Banner -->
+            <div class="col-xl-2 col-lg-3 d-none d-lg-block">
+                <div class="teachers-card p-3 text-center">
+                    <div>
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold font-monospace shadow-sm mb-3">
+                            <i class="bi bi-stars me-1"></i>Special Tribute
+                        </span>
+                        <div class="my-2">
+                            <i class="bi bi-award-fill display-4 text-warning"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-1" style="letter-spacing: -0.3px;">Thank You, Teachers!</h4>
+                        <span class="text-warning small fw-semibold">Architects of Our Future</span>
+                        <div class="festive-divider my-3"></div>
+                        <p class="small text-white-50 mb-3 fst-italic">
+                            &ldquo;Teaching is the one profession that creates all other professions.&rdquo;
+                        </p>
+                    </div>
+                    <div class="mt-auto pt-2">
+                        <div class="p-2 rounded bg-white bg-opacity-10 border border-warning border-opacity-25 small text-white-50">
+                            <i class="bi bi-flower1 text-warning me-1"></i>With eternal gratitude from all students &amp; alumni.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Banner (Shows below video on small screens) -->
+            <div class="col-12 d-lg-none mt-2">
+                <div class="teachers-card-mobile p-3 text-center shadow-sm">
+                    <h5 class="fw-bold text-white mb-1">
+                        <i class="bi bi-mortarboard-fill text-warning me-2"></i>Happy Teachers' Day! 🎓
+                    </h5>
+                    <p class="small text-white-50 mb-0">
+                        Dedicated with deepest respect, admiration, and gratitude to all our Teachers &amp; Professors.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+
+
+
+<h4 class="section-title">System Overview</h4>
+<div class="row g-4 mb-5">
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="card stat-card text-center p-3">
+            <i class="bi bi-people-fill stat-icon"></i>
+            <h3 class="mt-2 mb-0">{{ stats.students }}</h3>
+            <p class="text-muted small mb-0">Students</p>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="card stat-card text-center p-3">
+            <i class="bi bi-journal-bookmark-fill stat-icon"></i>
+            <h3 class="mt-2 mb-0">{{ stats.courses }}</h3>
+            <p class="text-muted small mb-0">Courses</p>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="card stat-card text-center p-3">
+            <i class="bi bi-diagram-3-fill stat-icon"></i>
+            <h3 class="mt-2 mb-0">{{ stats.departments }}</h3>
+            <p class="text-muted small mb-0">Departments</p>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="card stat-card text-center p-3">
+            <i class="bi bi-clipboard-check-fill stat-icon"></i>
+            <h3 class="mt-2 mb-0">{{ stats.registrations }}</h3>
+            <p class="text-muted small mb-0">Registrations</p>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="card stat-card text-center p-3">
+            <i class="bi bi-calendar-check-fill stat-icon text-success"></i>
+            <h3 class="mt-2 mb-0">{{ stats.total_attendances }}</h3>
+            <p class="text-muted small mb-0">Attendance Logs</p>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-6">
+        <div class="card stat-card text-center p-3">
+            <i class="bi bi-box-seam-fill stat-icon text-primary"></i>
+            <h3 class="mt-2 mb-0">{{ stats.active_elections }}</h3>
+            <p class="text-muted small mb-0">Active Elections</p>
+        </div>
+    </div>
+</div>
+
+<h4 class="section-title">Key Campus Modules</h4>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card p-4 h-100 shadow-sm">
+            <i class="bi bi-calendar2-check stat-icon mb-2 text-success"></i>
+            <h5>Attendance Tracking</h5>
+            <p class="text-muted mb-3">Daily course roll call, 1-click batch marking, attendance percentage ledger, and 75% minimum eligibility warning.</p>
+            <div class="mt-auto">
+                {% if request.user.is_authenticated %}
+                    <a href="{% if request.user.role == 'admin' or request.user.is_staff or request.user.is_superuser %}{% url 'attendance_dashboard' %}{% else %}{% url 'my_attendance' %}{% endif %}" class="btn btn-outline-primary btn-sm">
+                        View Attendance <i class="bi bi-arrow-right"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm">Login to View</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 h-100 shadow-sm">
+            <i class="bi bi-ui-checks-grid stat-icon mb-2 text-primary"></i>
+            <h5>Student Council Elections</h5>
+            <p class="text-muted mb-3">Campus voting portal: cast verified single-choice ballots per position, candidate manifestos, and real-time election results.</p>
+            <div class="mt-auto">
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'elections_list' %}" class="btn btn-outline-primary btn-sm">
+                        Go to Elections <i class="bi bi-arrow-right"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm">Login to Vote</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 h-100 shadow-sm">
+            <i class="bi bi-journal-check stat-icon mb-2"></i>
+            <h5>Course Registration</h5>
+            <p class="text-muted mb-3">Explore curriculum, register and unregister for department courses, and monitor academic progress.</p>
+            <div class="mt-auto">
+                <a href="{% url 'courses' %}" class="btn btn-outline-primary btn-sm">
+                    Browse Courses <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

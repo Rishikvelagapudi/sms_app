@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Official Ballot — {{ election.title }}{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'elections_list' %}">Elections</a></li>
+                    <li class="breadcrumb-item active">Ballot</li>
+                </ol>
+            </nav>
+            <span class="badge bg-success-subtle text-success border border-success p-2">
+                <i class="bi bi-shield-lock-fill me-1"></i>Secure Digital Ballot
+            </span>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4 text-center border-bottom bg-light">
+                <span class="badge bg-primary px-3 py-1 mb-2 text-uppercase">Official Ballot</span>
+                <h2 class="fw-bold mb-2">{{ election.title }}</h2>
+                {% if election.description %}
+                    <p class="text-muted mb-2">{{ election.description }}</p>
+                {% endif %}
+                <div class="alert alert-info py-2 px-3 small d-inline-block mb-0 text-start">
+                    <i class="bi bi-info-circle-fill me-1"></i>
+                    <strong>Voting Guidelines:</strong> You must select one candidate for each position below. Your vote is confidential and cannot be changed after submission.
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post" id="ballotForm">
+                    {% csrf_token %}
+
+                    {% for position in positions %}
+                    <div class="mb-5 pb-4 border-bottom position-block">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="fw-bold mb-0 text-dark">
+                                <i class="bi bi-person-badge text-primary me-2"></i>{{ position.title }}
+                            </h4>
+                            <span class="badge bg-secondary">Choose 1 Candidate</span>
+                        </div>
+                        {% if position.description %}
+                            <p class="text-muted small mb-3">{{ position.description }}</p>
+                        {% endif %}
+
+                        <div class="row g-3">
+                            {% for candidate in position.candidates.all %}
+                            <div class="col-md-6">
+                                <label class="card h-100 p-3 candidate-card border cursor-pointer" for="cand_{{ candidate.id }}" style="cursor: pointer; transition: all 0.2s;">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="form-check mt-1">
+                                            <input class="form-check-input fs-5" type="radio" name="position_{{ position.id }}" id="cand_{{ candidate.id }}" value="{{ candidate.id }}" required>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center gap-2 mb-1">
+                                                <i class="bi {{ candidate.symbol_icon }} text-primary fs-4"></i>
+                                                <h5 class="card-title fw-bold mb-0">{{ candidate.name }}</h5>
+                                            </div>
+                                            {% if candidate.student %}
+                                                <div class="text-muted small mb-2">
+                                                    {{ candidate.student.department.name }} &bull; Roll: {{ candidate.student.roll_number }}
+                                                </div>
+                                            {% endif %}
+                                            {% if candidate.manifesto %}
+                                                <p class="text-muted small mb-0 bg-light p-2 rounded">
+                                                    <i class="bi bi-quote me-1"></i>{{ candidate.manifesto }}
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            {% empty %}
+                            <div class="col-12">
+                                <p class="text-muted small italic">No candidates registered for this position yet.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold py-3 shadow-sm" onclick="return confirm('Confirm your ballot submission? Once submitted, your vote cannot be modified.');">
+                            <i class="bi bi-check2-circle me-2"></i>Submit Official Ballot
+                        </button>
+                        <a href="{% url 'elections_list' %}" class="btn btn-outline-secondary">Cancel &amp; Return</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.candidate-card:hover {
+    border-color: #fd7e14 !important;
+    background-color: #fffaf5;
+}
+.candidate-card:has(input:checked) {
+    border-color: #198754 !important;
+    background-color: #f0fdf4;
+    box-shadow: 0 0.125rem 0.25rem rgba(25, 135, 84, 0.15);
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block title %}Results — {{ election.title }}{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'elections_list' %}">Elections</a></li>
+                <li class="breadcrumb-item active">{{ election.title }} Results</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold mb-0">
+            <i class="bi bi-bar-chart-fill text-primary me-2"></i>Election Results
+        </h2>
+        <p class="text-muted mb-0"><strong>{{ election.title }}</strong> &bull; Official vote tally and standings</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        {% if has_voted %}
+            <span class="badge bg-success-subtle text-success border border-success p-2">
+                <i class="bi bi-check2-all me-1"></i>You Cast Your Ballot
+            </span>
+        {% endif %}
+        {% if election.is_voting_open %}
+            <span class="badge bg-info-subtle text-info-emphasis border border-info p-2">
+                <span class="spinner-grow spinner-grow-sm me-1" role="status"></span>Live Tabulation
+            </span>
+        {% else %}
+            <span class="badge bg-secondary p-2">
+                <i class="bi bi-trophy-fill me-1 text-warning"></i>Final Concluded Results
+            </span>
+        {% endif %}
+        <a href="{% url 'elections_list' %}" class="btn btn-outline-dark btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>All Elections
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    {% for pos_data in positions_data %}
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-person-badge text-primary me-2"></i>{{ pos_data.position.title }}
+                </h5>
+                <span class="badge bg-light text-dark border">
+                    <i class="bi bi-envelope-paper me-1"></i>{{ pos_data.total_votes }} total votes
+                </span>
+            </div>
+            <div class="card-body p-4">
+                {% if pos_data.candidates %}
+                    {% for c in pos_data.candidates %}
+                    <div class="mb-4 {% if forloop.last %}mb-0{% endif %}">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi {{ c.candidate.symbol_icon }} text-primary fs-5"></i>
+                                <span class="fw-bold fs-6">{{ c.candidate.name }}</span>
+                                {% if c.is_winner %}
+                                    {% if election.is_voting_open %}
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning small">
+                                            <i class="bi bi-star-fill text-warning me-1"></i>Leading
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-success-subtle text-success-emphasis border border-success small">
+                                            <i class="bi bi-trophy-fill text-warning me-1"></i>Winner
+                                        </span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <strong class="fs-6">{{ c.votes }}</strong>
+                                <span class="text-muted small">({{ c.percentage }}%)</span>
+                            </div>
+                        </div>
+
+                        <div class="progress" style="height: 12px;">
+                            <div class="progress-bar {% if c.is_winner %}bg-success{% else %}bg-primary{% endif %}"
+                                 role="progressbar"
+                                 style="width: {{ c.percentage }}%;"
+                                 aria-valuenow="{{ c.percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        {% if c.candidate.student %}
+                            <div class="text-muted small mt-1">
+                                {{ c.candidate.student.department.name }} &bull; Roll No: {{ c.candidate.student.roll_number }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center py-3 mb-0">No candidates were added for this position.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card p-5 text-center shadow-sm border-0">
+            <p class="text-muted mb-0">No positions or votes recorded for this election.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

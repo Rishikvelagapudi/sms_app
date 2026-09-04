@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{% if editing %}Edit{% else %}Add{% endif %} Student{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <h4 class="section-title">{% if editing %}Edit{% else %}Add New{% endif %} Student</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Roll Number *</label>
+                <input type="text" name="roll_number" class="form-control" value="{{ form.roll_number|default:'' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Department *</label>
+                <select name="department_id" class="form-select" required>
+                    <option value="">-- Select --</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}" {% if form.department_id == d.id or form.department.id == d.id %}selected{% endif %}>{{ d.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">First Name *</label>
+                <input type="text" name="first_name" class="form-control" value="{{ form.first_name|default:'' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Last Name *</label>
+                <input type="text" name="last_name" class="form-control" value="{{ form.last_name|default:'' }}" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Email *</label>
+                <input type="email" name="email" class="form-control" value="{{ form.email|default:'' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" value="{{ form.phone|default:'' }}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Gender</label>
+                <select name="gender" class="form-select">
+                    <option value="">-- Select --</option>
+                    <option value="Male" {% if form.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if form.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if form.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Enrollment Year</label>
+                <input type="number" name="enrollment_year" class="form-control" value="{{ form.enrollment_year|default:2026 }}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Address</label>
+            <textarea name="address" class="form-control" rows="2">{{ form.address|default:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">{% if editing %}Save Changes{% else %}Add Student{% endif %}</button>
+        <a href="{% url 'students' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

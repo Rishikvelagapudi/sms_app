@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{% if editing %}Edit{% else %}Add{% endif %} Department{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <h4 class="section-title">{% if editing %}Edit{% else %}Add New{% endif %} Department</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label class="form-label">Department Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ form.name|default:'' }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Code *</label>
+                <input type="text" name="code" class="form-control" value="{{ form.code|default:'' }}" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Head of Department</label>
+            <input type="text" name="head_of_department" class="form-control" value="{{ form.head_of_department|default:'' }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="3">{{ form.description|default:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">{% if editing %}Save Changes{% else %}Add Department{% endif %}</button>
+        <a href="{% url 'departments' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

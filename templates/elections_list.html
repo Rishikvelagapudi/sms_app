@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}Campus Elections{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-box-seam text-primary me-2"></i>Campus Voting Portal</h2>
+        <p class="text-muted mb-0">Cast your ballot in student council elections, class polls, and campus leadership votes.</p>
+    </div>
+    {% if is_admin %}
+    <div>
+        <a href="{% url 'admin_elections' %}" class="btn btn-primary">
+            <i class="bi bi-gear-fill me-1"></i>Manage Elections
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% for item in elections_data %}
+    <div class="col-lg-6">
+        <div class="card h-100 shadow-sm border-0 {% if item.is_voting_open %}border-top border-4 border-success{% endif %}">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h4 class="card-title fw-bold mb-0">{{ item.election.title }}</h4>
+                    {% if item.status_label == 'Ongoing' %}
+                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                            <span class="spinner-grow spinner-grow-sm me-1" role="status"></span>Voting Open
+                        </span>
+                    {% elif item.status_label == 'Upcoming' %}
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning px-2 py-1">
+                            <i class="bi bi-clock me-1"></i>Upcoming
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">
+                            <i class="bi bi-lock me-1"></i>Concluded
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if item.election.description %}
+                    <p class="text-muted mb-3">{{ item.election.description }}</p>
+                {% endif %}
+
+                <div class="bg-light rounded p-3 mb-3 small">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <i class="bi bi-calendar-check text-muted me-1"></i><strong>Starts:</strong><br>
+                            <span class="text-muted">{{ item.election.start_date|date:"M d, Y h:i A" }}</span>
+                        </div>
+                        <div class="col-6">
+                            <i class="bi bi-calendar-x text-muted me-1"></i><strong>Ends:</strong><br>
+                            <span class="text-muted">{{ item.election.end_date|date:"M d, Y h:i A" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 small text-muted">
+                    <span><i class="bi bi-person-lines-fill me-1"></i><strong>{{ item.positions_count }}</strong> Positions</span>
+                    <span><i class="bi bi-envelope-paper me-1"></i><strong>{{ item.total_votes }}</strong> Ballots Cast</span>
+                </div>
+
+                <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                    {% if item.has_voted %}
+                        <span class="badge bg-success-subtle text-success p-2">
+                            <i class="bi bi-check2-all me-1"></i>You Voted
+                        </span>
+                        <a href="{% url 'election_results' item.election.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-bar-chart-line me-1"></i>Live Results
+                        </a>
+                    {% elif item.is_voting_open %}
+                        <a href="{% url 'election_ballot' item.election.id %}" class="btn btn-success">
+                            <i class="bi bi-pencil-square me-1"></i>Cast Your Vote
+                        </a>
+                        <a href="{% url 'election_results' item.election.id %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-bar-chart-line me-1"></i>Results
+                        </a>
+                    {% else %}
+                        <span class="text-muted small">Voting Closed</span>
+                        <a href="{% url 'election_results' item.election.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-trophy me-1"></i>Final Results
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card p-5 text-center shadow-sm border-0">
+            <i class="bi bi-box-seam display-3 text-muted mb-3"></i>
+            <h4>No Active or Scheduled Elections</h4>
+            <p class="text-muted">Campus elections will be announced here once scheduled by the administration.</p>
+            {% if is_admin %}
+            <div>
+                <a href="{% url 'admin_elections' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Create First Election
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

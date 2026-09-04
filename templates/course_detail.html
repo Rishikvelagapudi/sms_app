@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.name }}{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <span class="badge badge-dept mb-2">{{ course.department.code }}</span>
+            <h3>{{ course.name }}</h3>
+            <p class="text-muted">Code: {{ course.code }} &middot; {{ course.credits }} credits &middot; {{ course.duration_weeks }} weeks</p>
+        </div>
+        <a href="{% url 'courses' %}" class="btn btn-outline-secondary btn-sm">Back to Courses</a>
+    </div>
+    <hr>
+    <p>{{ course.description|default:'No description provided for this course.' }}</p>
+    <p class="text-muted"><i class="bi bi-people me-1"></i>{{ course.enrolled_count }} student(s) enrolled</p>
+    <p class="text-muted"><i class="bi bi-building me-1"></i>Department: {{ course.department.name }}</p>
+
+    {% if request.user.is_authenticated %}
+        {% if request.user.student_profile %}
+            {% if is_registered %}
+            <form action="{% url 'unregister_course' course.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-x-circle me-1"></i>Unregister from this Course
+                </button>
+            </form>
+            {% else %}
+            <form action="{% url 'register_course' course.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>Register for this Course
+                </button>
+            </form>
+            {% endif %}
+        {% else %}
+            <p class="text-muted">Your account has no linked student profile, so you can't register directly. Contact an administrator.</p>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary">Login to Register</a>
+    {% endif %}
+
+    {% if request.user.is_authenticated and request.user.role == 'admin' %}
+    <hr>
+    <a href="{% url 'edit_course' course.id %}" class="btn btn-outline-primary btn-sm">Edit Course</a>
+    <form action="{% url 'delete_course' course.id %}" method="POST" class="d-inline" onsubmit="return confirm('Delete this course?');">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger btn-sm">Delete Course</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

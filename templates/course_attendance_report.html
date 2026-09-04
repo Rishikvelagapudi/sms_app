@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Report — {{ course.code }}{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'attendance_dashboard' %}">Attendance</a></li>
+                <li class="breadcrumb-item active">{{ course.code }} Report</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold mb-0"><i class="bi bi-file-earmark-bar-graph text-primary me-2"></i>Course Attendance Report</h2>
+        <p class="text-muted mb-0"><strong>{{ course.code }}</strong> — {{ course.name }} ({{ course.department.name }})</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'mark_attendance' course.id %}" class="btn btn-primary">
+            <i class="bi bi-pencil-square me-1"></i>Take Attendance
+        </a>
+        <a href="{% url 'attendance_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>All Courses
+        </a>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-0 text-center">
+            <span class="text-muted small">Total Sessions Conducted</span>
+            <h3 class="fw-bold text-dark mt-1 mb-0">{{ total_sessions }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-0 text-center">
+            <span class="text-muted small">Course Average Attendance</span>
+            <h3 class="fw-bold {% if overall_pct >= 75 %}text-success{% elif overall_pct >= 60 %}text-warning{% else %}text-danger{% endif %} mt-1 mb-0">
+                {{ overall_pct }}%
+            </h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm border-0 text-center">
+            <span class="text-muted small">Minimum Eligibility Standard</span>
+            <h3 class="fw-bold text-info mt-1 mb-0">75%</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Report Table -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-people me-2 text-secondary"></i>Enrolled Students Ledger</h5>
+        <span class="badge bg-light text-secondary border">{{ student_reports|length }} Students</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th class="text-center">Classes Attended</th>
+                    <th class="text-center">Classes Absent</th>
+                    <th class="text-center">Attendance %</th>
+                    <th class="text-center">Eligibility Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in student_reports %}
+                <tr {% if item.is_low %}class="table-danger-subtle"{% endif %}>
+                    <td><span class="badge bg-secondary font-monospace">{{ item.student.roll_number }}</span></td>
+                    <td>
+                        <strong>{{ item.student.full_name }}</strong>
+                        <div class="text-muted small">{{ item.student.email }}</div>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-success-subtle text-success-emphasis fs-6">{{ item.present_count }} / {{ total_sessions }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-danger-subtle text-danger-emphasis fs-6">{{ item.absent_count }}</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-inline-flex align-items-center gap-2">
+                            <div class="progress" style="width: 70px; height: 8px;">
+                                <div class="progress-bar {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                                     role="progressbar" style="width: {{ item.percentage }}%;"></div>
+                            </div>
+                            <span class="fw-bold {% if item.percentage >= 75 %}text-success{% elif item.percentage >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ item.percentage }}%
+                            </span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        {% if total_sessions == 0 %}
+                            <span class="badge bg-secondary">No Sessions</span>
+                        {% elif item.is_low %}
+                            <span class="badge bg-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Shortage (&lt;75%)</span>
+                        {% else %}
+                            <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i>Eligible</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                        No students enrolled in this course.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{% if editing %}Edit{% else %}Add{% endif %} Course{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <h4 class="section-title">{% if editing %}Edit{% else %}Add New{% endif %} Course</h4>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label class="form-label">Course Name *</label>
+                <input type="text" name="name" class="form-control" value="{{ form.name|default:'' }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Course Code *</label>
+                <input type="text" name="code" class="form-control" value="{{ form.code|default:'' }}" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Department *</label>
+                <select name="department_id" class="form-select" required>
+                    <option value="">-- Select --</option>
+                    {% for d in departments %}
+                    <option value="{{ d.id }}" {% if form.department_id == d.id or form.department.id == d.id %}selected{% endif %}>{{ d.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Credits</label>
+                <input type="number" name="credits" class="form-control" value="{{ form.credits|default:3 }}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Duration (weeks)</label>
+                <input type="number" name="duration_weeks" class="form-control" value="{{ form.duration_weeks|default:16 }}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="3">{{ form.description|default:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">{% if editing %}Save Changes{% else %}Add Course{% endif %}</button>
+        <a href="{% url 'courses' %}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

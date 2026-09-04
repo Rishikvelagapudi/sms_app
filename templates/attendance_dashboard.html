@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Dashboard{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-calendar-check text-primary me-2"></i>Attendance Dashboard</h2>
+        <p class="text-muted mb-0">Record daily course attendance and monitor student eligibility across all departments.</p>
+    </div>
+    <div>
+        <span class="badge bg-primary-subtle text-primary p-2 fs-6">
+            <i class="bi bi-calendar3 me-1"></i>Today: {{ today_str }}
+        </span>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-journal-bookmark me-2 text-secondary"></i>Course Attendance Roster</h5>
+        <span class="badge bg-light text-secondary border">{{ course_data|length }} Courses</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Course</th>
+                    <th>Department</th>
+                    <th class="text-center">Enrolled</th>
+                    <th class="text-center">Sessions Held</th>
+                    <th class="text-center">Avg. Attendance</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in course_data %}
+                <tr>
+                    <td>
+                        <span class="badge bg-secondary me-1">{{ item.course.code }}</span>
+                        <strong>{{ item.course.name }}</strong>
+                    </td>
+                    <td>{{ item.course.department.name }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-light text-dark border">{{ item.enrolled_count }} students</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-info-subtle text-info-emphasis">{{ item.total_sessions }} classes</span>
+                    </td>
+                    <td class="text-center">
+                        {% if item.total_sessions > 0 %}
+                            <div class="d-inline-flex align-items-center gap-2">
+                                <div class="progress" style="width: 80px; height: 8px;">
+                                    <div class="progress-bar {% if item.avg_attendance >= 75 %}bg-success{% elif item.avg_attendance >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                                         role="progressbar" style="width: {{ item.avg_attendance }}%;"></div>
+                                </div>
+                                <span class="fw-bold {% if item.avg_attendance >= 75 %}text-success{% elif item.avg_attendance >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ item.avg_attendance }}%
+                                </span>
+                            </div>
+                        {% else %}
+                            <span class="text-muted small">No logs yet</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'mark_attendance' item.course.id %}" class="btn btn-primary" title="Mark Attendance">
+                                <i class="bi bi-pencil-square me-1"></i>Mark
+                            </a>
+                            <a href="{% url 'course_attendance_report' item.course.id %}" class="btn btn-outline-secondary" title="View Full Report">
+                                <i class="bi bi-bar-chart-line me-1"></i>Report
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                        No courses available. Add courses first.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

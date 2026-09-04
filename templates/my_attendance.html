@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}My Attendance{% endblock %}
+{% block content %}
+
+{% if student %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-person-check-fill text-primary me-2"></i>My Attendance Portal</h2>
+        <p class="text-muted mb-0">Track your class attendance and examination eligibility status.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-secondary p-2 font-monospace fs-6">Roll No: {{ student.roll_number }}</span>
+        <span class="badge bg-light text-dark border p-2">{{ student.department.name }}</span>
+    </div>
+</div>
+
+<!-- Overall Summary Card -->
+<div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body p-4">
+        <div class="row align-items-center">
+            <div class="col-md-7">
+                <h5 class="fw-bold mb-1">Overall Academic Attendance</h5>
+                <p class="text-muted small mb-2">Across all your registered courses this semester.</p>
+                <div class="progress mb-2" style="height: 14px;">
+                    <div class="progress-bar {% if overall_pct >= 75 %}bg-success{% elif overall_pct >= 60 %}bg-warning{% else %}bg-danger{% endif %} progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: {{ overall_pct }}%;"></div>
+                </div>
+                <div class="d-flex justify-content-between text-muted small">
+                    <span>Minimum Exam Eligibility: <strong>75%</strong></span>
+                    <span>Total Sessions: <strong>{{ total_attended_all }} / {{ total_classes_all }}</strong></span>
+                </div>
+            </div>
+            <div class="col-md-5 text-md-end mt-3 mt-md-0">
+                <div class="display-5 fw-bold {% if overall_pct >= 75 %}text-success{% elif overall_pct >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ overall_pct }}%
+                </div>
+                {% if total_classes_all == 0 %}
+                    <span class="badge bg-secondary">No classes recorded yet</span>
+                {% elif overall_pct >= 75 %}
+                    <span class="badge bg-success-subtle text-success-emphasis border border-success p-2">
+                        <i class="bi bi-check-circle-fill me-1"></i>Good Standing (Eligible)
+                    </span>
+                {% else %}
+                    <span class="badge bg-danger-subtle text-danger-emphasis border border-danger p-2">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>Shortage Alert (&lt;75%)
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Course by Course Breakdown -->
+<h4 class="section-title">Course-Wise Breakdown</h4>
+<div class="row g-4 mb-4">
+    {% for item in course_stats %}
+    <div class="col-lg-6">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                <div>
+                    <span class="badge bg-secondary font-monospace me-1">{{ item.course.code }}</span>
+                    <strong>{{ item.course.name }}</strong>
+                </div>
+                <span class="badge {% if item.total_sessions == 0 %}bg-secondary{% elif item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                    {{ item.percentage }}%
+                </span>
+            </div>
+            <div class="card-body p-3">
+                <div class="row text-center mb-3">
+                    <div class="col-4 border-end">
+                        <span class="text-muted small">Classes Held</span>
+                        <h5 class="fw-bold mb-0 mt-1">{{ item.total_sessions }}</h5>
+                    </div>
+                    <div class="col-4 border-end">
+                        <span class="text-muted small text-success">Attended</span>
+                        <h5 class="fw-bold text-success mb-0 mt-1">{{ item.attended_count }}</h5>
+                    </div>
+                    <div class="col-4">
+                        <span class="text-muted small text-danger">Absent</span>
+                        <h5 class="fw-bold text-danger mb-0 mt-1">{{ item.absent_count }}</h5>
+                    </div>
+                </div>
+
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
+                         role="progressbar" style="width: {{ item.percentage }}%;"></div>
+                </div>
+
+                {% if item.is_low %}
+                <div class="alert alert-warning py-2 px-3 small d-flex align-items-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                    <span>Attendance is below 75%. Please attend upcoming classes to avoid exam disqualification.</span>
+                </div>
+                {% endif %}
+
+                <h6 class="text-muted small fw-bold text-uppercase mb-2">Recent Session Log</h6>
+                {% if item.recent_logs %}
+                <div class="list-group list-group-flush small border rounded">
+                    {% for log in item.recent_logs %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                        <div>
+                            <i class="bi bi-calendar3 text-muted me-1"></i>
+                            <strong>{{ log.date|date:"M d, Y" }}</strong>
+                            {% if log.remarks %}<span class="text-muted ms-2 fst-italic">({{ log.remarks }})</span>{% endif %}
+                        </div>
+                        <span class="badge {% if log.status == 'Present' %}bg-success{% elif log.status == 'Absent' %}bg-danger{% elif log.status == 'Late' %}bg-warning text-dark{% else %}bg-info{% endif %}">
+                            {{ log.status }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted small mb-0 fst-italic">No class sessions recorded yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card p-5 text-center shadow-sm border-0">
+            <i class="bi bi-journal-x display-4 text-muted mb-3"></i>
+            <h5>You are not registered for any courses yet.</h5>
+            <p class="text-muted small">Register for semester courses to begin tracking your attendance.</p>
+            <div>
+                <a href="{% url 'courses' %}" class="btn btn-primary">Browse Courses</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="card p-5 text-center shadow-sm border-0">
+    <i class="bi bi-person-x display-4 text-muted mb-3"></i>
+    <h4>No Linked Student Profile</h4>
+    <p class="text-muted">Your user account ({{ request.user.username }}) is not linked to a student record.</p>
+    <div>
+        <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="card auth-card">
+    <h3 class="section-title">Create Account</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Username *</label>
+                <input type="text" name="username" class="form-control" value="{{ form.username|default:'' }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Email *</label>
+                <input type="email" name="email" class="form-control" value="{{ form.email|default:'' }}" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Password *</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Confirm Password *</label>
+                <input type="password" name="confirm_password" class="form-control" required>
+            </div>
+        </div>
+        <hr>
+        <p class="text-muted small">Optional: link a student profile now</p>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">First Name</label>
+                <input type="text" name="first_name" class="form-control" value="{{ form.first_name|default:'' }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Last Name</label>
+                <input type="text" name="last_name" class="form-control" value="{{ form.last_name|default:'' }}">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Department</label>
+            <select name="department_id" class="form-select">
+                <option value="">-- Select Department --</option>
+                {% for d in departments %}
+                <option value="{{ d.id }}">{{ d.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+    <p class="text-center mt-3 mb-0">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}
