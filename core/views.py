@@ -41,6 +41,10 @@ def home(request):
         'active_elections': Election.objects.filter(is_active=True).count(),
         'total_attendances': Attendance.objects.count(),
     }
+    return render(request, 'home.html', {'stats': stats})
+
+
+def readme_view(request):
     readme_content = ""
     readme_path = os.path.join(settings.BASE_DIR, 'README.md')
     try:
@@ -48,10 +52,9 @@ def home(request):
             with open(readme_path, 'r', encoding='utf-8') as f:
                 readme_content = f.read()
     except Exception:
-        readme_content = ""
+        readme_content = "# README\n\nUnable to load README.md."
 
-    return render(request, 'home.html', {
-        'stats': stats,
+    return render(request, 'readme.html', {
         'readme_content': readme_content,
     })
 

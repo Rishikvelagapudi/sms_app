@@ -2,11 +2,6 @@
 {% load static %}
 {% block title %}Home{% endblock %}
 
-{% block extra_head %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.6.1/github-markdown.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-{% endblock %}
-
 {% block hero %}
 <!-- Full-Width Hero: Happy Teachers' Day Tribute Banners + Center Video -->
 <div class="teachers-day-hero-wrapper">
@@ -196,174 +191,46 @@
 </div>
 
 <!-- ================================================================= -->
-<!-- Jury & Institutional Technical Specification Showcase (README.md) -->
+<!-- Jury & Institutional Technical Specification Showcase Card -->
 <!-- ================================================================= -->
-<div class="readme-section mt-5 pt-4 border-top" id="technical-docs">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-        <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge bg-primary px-3 py-1 fw-semibold"><i class="bi bi-file-earmark-code me-1"></i>TECHNICAL ARCHITECTURE</span>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"><i class="bi bi-patch-check-fill me-1"></i>Jury Ready</span>
-                <span class="badge bg-dark-subtle text-dark border border-dark-subtle px-2 py-1"><i class="bi bi-git me-1"></i>v1.0.0</span>
-            </div>
-            <h3 class="fw-bold mb-0 text-dark">
-                <i class="bi bi-journal-richtext text-primary me-2"></i>System Architecture &amp; Technical Specification
-            </h3>
-            <p class="text-muted small mb-0">Live interactive documentation parsed directly from <code class="text-primary">README.md</code>, including Multi-Tier Architecture diagrams, ER Schema, and Academic Jury Evaluation Guide.</p>
-        </div>
-        <div class="d-flex align-items-center flex-wrap gap-2">
-            <button class="btn btn-outline-secondary btn-sm" id="toggleRawBtn" type="button" onclick="toggleMarkdownView()">
-                <i class="bi bi-code-slash me-1"></i><span id="toggleBtnText">View Raw Markdown</span>
-            </button>
-            <button class="btn btn-outline-primary btn-sm" id="copyReadmeBtn" type="button" onclick="copyReadmeContent()">
-                <i class="bi bi-clipboard me-1"></i>Copy Markdown
-            </button>
-            <a href="https://github.com/Rishikvelagapudi/sms_app" target="_blank" class="btn btn-dark btn-sm">
-                <i class="bi bi-github me-1"></i>GitHub Repo
-            </a>
-        </div>
-    </div>
-
-    <!-- Hidden source holding raw markdown from view -->
-    <textarea id="rawReadmeSource" style="display:none;">{{ readme_content|escape }}</textarea>
-
-    <!-- Document Card Display -->
-    <div class="card readme-card overflow-hidden">
-        <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3 border-bottom">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-file-earmark-text-fill text-primary"></i>
-                <span class="fw-semibold small text-dark">README.md</span>
-                <span class="badge text-bg-secondary bg-opacity-10 text-secondary border small py-0">Markdown UTF-8</span>
-            </div>
-            <div class="small text-muted d-none d-sm-block">
-                <i class="bi bi-cpu me-1"></i>DR RVR NRI Institution of Technology
-            </div>
-        </div>
-
-        <div class="card-body p-4 p-md-5 bg-white">
-            <!-- Rendered Output Area -->
-            <div id="readmeRendered" class="markdown-body jury-markdown-preview">
-                <div class="text-center py-5 text-muted">
-                    <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
-                    <div>Rendering system architecture &amp; interactive ER diagrams...</div>
+<div class="card border-0 shadow-sm rounded-4 mt-5 overflow-hidden" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff;">
+    <div class="card-body p-4 p-lg-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-warning text-dark px-3 py-2 fw-bold font-monospace shadow-sm">
+                        <i class="bi bi-mortarboard-fill me-1"></i>Jury Presentation
+                    </span>
+                    <span class="badge bg-white bg-opacity-20 text-white px-2 py-1">
+                        <i class="bi bi-check-circle-fill text-success me-1"></i>System Specification
+                    </span>
+                    <span class="badge bg-primary px-2 py-1">v1.0.0</span>
+                </div>
+                <h2 class="fw-bold text-white mb-2">
+                    <i class="bi bi-journal-code text-warning me-2"></i>System Architecture &amp; Technical Specification
+                </h2>
+                <p class="text-white-50 mb-3 fs-6">
+                    Review the end-to-end multi-tier system architecture, entity-relationship (ER) relational database schema, RBAC security model, ACID e-voting guarantees, and automated verification matrix.
+                </p>
+                <div class="d-flex flex-wrap gap-2 text-white-50 small">
+                    <span><i class="bi bi-diagram-3 text-warning me-1"></i>Interactive Flowcharts</span> &bull;
+                    <span><i class="bi bi-database-check text-info me-1"></i>ER Relational Model</span> &bull;
+                    <span><i class="bi bi-shield-check text-success me-1"></i>Security Specs</span> &bull;
+                    <span><i class="bi bi-play-circle text-danger me-1"></i>3-Min Jury Demo Guide</span>
                 </div>
             </div>
-
-            <!-- Raw Preformatted Fallback / Toggle Area (Hidden by default) -->
-            <div id="readmeRaw" style="display:none;">
-                <pre class="bg-dark text-light p-4 rounded-3 small font-monospace" style="max-height: 650px; overflow-y: auto; white-space: pre-wrap;"><code>{{ readme_content }}</code></pre>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-column flex-sm-row flex-lg-column gap-2 justify-content-lg-end">
+                    <a href="{% url 'readme' %}" class="btn btn-warning btn-lg fw-bold px-4 py-3 shadow-lg">
+                        <i class="bi bi-file-earmark-richtext-fill me-2"></i>View System Architecture &amp; README <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                    <a href="https://github.com/Rishikvelagapudi/sms_app" target="_blank" class="btn btn-outline-light btn-sm px-3 py-2">
+                        <i class="bi bi-github me-1"></i>View on GitHub <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<!-- Marked.js for Markdown parsing -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<!-- Mermaid.js for interactive Architecture & ER Diagrams -->
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<!-- KaTeX for Mathematical LaTeX formatting -->
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const rawMarkdown = document.getElementById('rawReadmeSource').value;
-    const renderedContainer = document.getElementById('readmeRendered');
-
-    if (typeof marked !== 'undefined') {
-        try {
-            marked.setOptions({
-                gfm: true,
-                breaks: false,
-                headerIds: true,
-                mangle: false
-            });
-
-            // Parse Markdown into HTML
-            renderedContainer.innerHTML = marked.parse(rawMarkdown);
-
-            // Replace Mermaid code blocks with <div class="mermaid">
-            const mermaidCodes = renderedContainer.querySelectorAll('pre code.language-mermaid');
-            mermaidCodes.forEach(function(codeEl) {
-                const preEl = codeEl.parentElement;
-                const div = document.createElement('div');
-                div.className = 'mermaid my-4 py-3 bg-light rounded-3 text-center border shadow-sm';
-                div.textContent = codeEl.textContent;
-                preEl.replaceWith(div);
-            });
-
-            // Initialize and run Mermaid
-            if (typeof mermaid !== 'undefined') {
-                mermaid.initialize({
-                    startOnLoad: false,
-                    theme: 'default',
-                    securityLevel: 'loose',
-                    fontFamily: 'Segoe UI, Roboto, sans-serif'
-                });
-                mermaid.run({
-                    querySelector: '.mermaid'
-                });
-            }
-
-            // Render Math equations via KaTeX
-            if (typeof renderMathInElement !== 'undefined') {
-                renderMathInElement(renderedContainer, {
-                    delimiters: [
-                        {left: '$$', right: '$$', display: true},
-                        {left: '$', right: '$', display: false},
-                        {left: '\\(', right: '\\)', display: false},
-                        {left: '\\[', right: '\\]', display: true}
-                    ],
-                    throwOnError: false
-                });
-            }
-        } catch (err) {
-            console.error('Error rendering markdown:', err);
-            document.getElementById('readmeRaw').style.display = 'block';
-            renderedContainer.style.display = 'none';
-        }
-    } else {
-        document.getElementById('readmeRaw').style.display = 'block';
-        renderedContainer.style.display = 'none';
-    }
-});
-
-function toggleMarkdownView() {
-    const rendered = document.getElementById('readmeRendered');
-    const raw = document.getElementById('readmeRaw');
-    const btnText = document.getElementById('toggleBtnText');
-    if (rendered.style.display === 'none') {
-        rendered.style.display = 'block';
-        raw.style.display = 'none';
-        btnText.textContent = 'View Raw Markdown';
-    } else {
-        rendered.style.display = 'none';
-        raw.style.display = 'block';
-        btnText.textContent = 'View Rendered View';
-    }
-}
-
-function copyReadmeContent() {
-    const raw = document.getElementById('rawReadmeSource').value;
-    navigator.clipboard.writeText(raw).then(function() {
-        const copyBtn = document.getElementById('copyReadmeBtn');
-        if (copyBtn) {
-            const originalHTML = copyBtn.innerHTML;
-            copyBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied!';
-            copyBtn.classList.remove('btn-outline-primary');
-            copyBtn.classList.add('btn-success');
-            setTimeout(function() {
-                copyBtn.innerHTML = originalHTML;
-                copyBtn.classList.remove('btn-success');
-                copyBtn.classList.add('btn-outline-primary');
-            }, 2000);
-        }
-    }).catch(function(err) {
-        alert('Failed to copy: ' + err);
-    });
-}
-</script>
 {% endblock %}

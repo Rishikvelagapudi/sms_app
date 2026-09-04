@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}System Architecture & Technical Specification | README{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.6.1/github-markdown.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<style>
+    .docs-hero {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #ffffff;
+        border-radius: 1rem;
+        padding: 2.5rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    .readme-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+    }
+    .jury-markdown-preview {
+        font-size: 0.98rem;
+        line-height: 1.75;
+        color: #24292f;
+    }
+    .jury-markdown-preview .mermaid {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 1.5rem 1rem;
+        margin: 1.5rem 0;
+        display: flex;
+        justify-content: center;
+        overflow-x: auto;
+    }
+    .sticky-actions-bar {
+        position: sticky;
+        top: 70px;
+        z-index: 1020;
+        backdrop-filter: blur(8px);
+        background-color: rgba(255, 255, 255, 0.92);
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        margin-bottom: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Top Breadcrumb & Hero Header -->
+<div class="docs-hero">
+    <div class="row align-items-center g-3">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <a href="{% url 'home' %}" class="btn btn-outline-light btn-sm py-1 px-2">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Home
+                </a>
+                <span class="badge bg-warning text-dark px-2 py-1 fw-bold font-monospace">
+                    <i class="bi bi-mortarboard-fill me-1"></i>Jury Presentation
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                    <i class="bi bi-patch-check-fill me-1"></i>System Specification
+                </span>
+            </div>
+            <h1 class="fw-bold text-white mb-2" style="letter-spacing: -0.5px;">
+                <i class="bi bi-journal-code text-warning me-2"></i>System Architecture &amp; Documentation
+            </h1>
+            <p class="text-white-50 mb-0 fs-6">
+                Official technical reference for <strong>DR RVR NRI Institution of Technology</strong> — covering Multi-Tier Architecture, ER Relational Schema, ACID E-Voting, Attendance Shortage Analytics, and Jury Demonstration Flow.
+            </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+            <a href="https://github.com/Rishikvelagapudi/sms_app" target="_blank" class="btn btn-light btn-sm fw-semibold shadow-sm px-3 py-2">
+                <i class="bi bi-github me-1"></i>GitHub Repository <i class="bi bi-box-arrow-up-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Sticky Quick Actions Bar -->
+<div class="sticky-actions-bar d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-file-earmark-text-fill text-primary"></i>
+        <span class="fw-bold small text-dark">README.md</span>
+        <span class="badge bg-light text-secondary border small">Live Parser</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-secondary btn-sm" id="toggleRawBtn" type="button" onclick="toggleMarkdownView()">
+            <i class="bi bi-code-slash me-1"></i><span id="toggleBtnText">View Raw Markdown</span>
+        </button>
+        <button class="btn btn-outline-primary btn-sm" id="copyReadmeBtn" type="button" onclick="copyReadmeContent()">
+            <i class="bi bi-clipboard me-1"></i>Copy Markdown
+        </button>
+        <button class="btn btn-outline-dark btn-sm" type="button" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i>Print / Save PDF
+        </button>
+    </div>
+</div>
+
+<!-- Hidden raw markdown source -->
+<textarea id="rawReadmeSource" style="display:none;">{{ readme_content|escape }}</textarea>
+
+<!-- Main Document Card -->
+<div class="card readme-card overflow-hidden mb-5">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3 border-bottom">
+        <div class="small text-muted">
+            <i class="bi bi-shield-check text-success me-1"></i>Verified Academic Presentation Document
+        </div>
+        <div class="small text-muted font-monospace">
+            Encoding: UTF-8 &bull; Markdown
+        </div>
+    </div>
+
+    <div class="card-body p-4 p-md-5 bg-white">
+        <!-- Rendered Output Container -->
+        <div id="readmeRendered" class="markdown-body jury-markdown-preview">
+            <div class="text-center py-5 text-muted">
+                <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+                <div>Rendering system architecture &amp; interactive ER diagrams...</div>
+            </div>
+        </div>
+
+        <!-- Raw Fallback / Source View (Hidden by default) -->
+        <div id="readmeRaw" style="display:none;">
+            <pre class="bg-dark text-light p-4 rounded-3 small font-monospace" style="max-height: 800px; overflow-y: auto; white-space: pre-wrap;"><code>{{ readme_content }}</code></pre>
+        </div>
+    </div>
+
+    <div class="card-footer bg-light py-3 text-center border-top">
+        <a href="{% url 'home' %}" class="btn btn-primary px-4">
+            <i class="bi bi-house-door-fill me-1"></i>Back to Home Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Marked.js for Markdown parsing -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Mermaid.js for interactive Architecture & ER Diagrams -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<!-- KaTeX for Mathematical LaTeX formatting -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rawMarkdown = document.getElementById('rawReadmeSource').value;
+    const renderedContainer = document.getElementById('readmeRendered');
+
+    if (typeof marked !== 'undefined') {
+        try {
+            marked.setOptions({
+                gfm: true,
+                breaks: false,
+                headerIds: true,
+                mangle: false
+            });
+
+            // Parse Markdown into HTML
+            renderedContainer.innerHTML = marked.parse(rawMarkdown);
+
+            // Convert Mermaid code blocks into interactive diagram divs
+            const mermaidCodes = renderedContainer.querySelectorAll('pre code.language-mermaid');
+            mermaidCodes.forEach(function(codeEl) {
+                const preEl = codeEl.parentElement;
+                const div = document.createElement('div');
+                div.className = 'mermaid my-4 py-3 bg-light rounded-3 text-center border shadow-sm';
+                div.textContent = codeEl.textContent;
+                preEl.replaceWith(div);
+            });
+
+            // Initialize Mermaid engine
+            if (typeof mermaid !== 'undefined') {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'default',
+                    securityLevel: 'loose',
+                    fontFamily: 'Segoe UI, Roboto, sans-serif'
+                });
+                mermaid.run({
+                    querySelector: '.mermaid'
+                });
+            }
+
+            // Typeset LaTeX math with KaTeX
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(renderedContainer, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+        } catch (err) {
+            console.error('Error rendering markdown:', err);
+            document.getElementById('readmeRaw').style.display = 'block';
+            renderedContainer.style.display = 'none';
+        }
+    } else {
+        document.getElementById('readmeRaw').style.display = 'block';
+        renderedContainer.style.display = 'none';
+    }
+});
+
+function toggleMarkdownView() {
+    const rendered = document.getElementById('readmeRendered');
+    const raw = document.getElementById('readmeRaw');
+    const btnText = document.getElementById('toggleBtnText');
+    if (rendered.style.display === 'none') {
+        rendered.style.display = 'block';
+        raw.style.display = 'none';
+        btnText.textContent = 'View Raw Markdown';
+    } else {
+        rendered.style.display = 'none';
+        raw.style.display = 'block';
+        btnText.textContent = 'View Rendered View';
+    }
+}
+
+function copyReadmeContent() {
+    const raw = document.getElementById('rawReadmeSource').value;
+    navigator.clipboard.writeText(raw).then(function() {
+        const copyBtn = document.getElementById('copyReadmeBtn');
+        if (copyBtn) {
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied!';
+            copyBtn.classList.remove('btn-outline-primary');
+            copyBtn.classList.add('btn-success');
+            setTimeout(function() {
+                copyBtn.innerHTML = originalHTML;
+                copyBtn.classList.remove('btn-success');
+                copyBtn.classList.add('btn-outline-primary');
+            }, 2000);
+        }
+    }).catch(function(err) {
+        alert('Failed to copy: ' + err);
+    });
+}
+</script>
+{% endblock %}
