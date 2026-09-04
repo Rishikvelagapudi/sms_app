@@ -49,25 +49,31 @@
                 </div>
             </div>
 
-            <!-- Right Side: Special Gratitude & Appreciation Banner -->
+            <!-- Right Side: Special Gratitude & Appreciation Banner with QR Code -->
             <div class="col-xl-2 col-lg-3 d-none d-lg-block">
                 <div class="teachers-card p-3 text-center">
                     <div>
-                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold font-monospace shadow-sm mb-3">
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold font-monospace shadow-sm mb-2">
                             <i class="bi bi-stars me-1"></i>Special Tribute
                         </span>
-                        <div class="my-2">
-                            <i class="bi bi-award-fill display-4 text-warning"></i>
-                        </div>
-                        <h4 class="fw-bold text-white mb-1" style="letter-spacing: -0.3px;">Thank You, Teachers!</h4>
+                        <h5 class="fw-bold text-white mb-1" style="letter-spacing: -0.3px;">Thank You, Teachers!</h5>
                         <span class="text-warning small fw-semibold">Architects of Our Future</span>
-                        <div class="festive-divider my-3"></div>
-                        <p class="small text-white-50 mb-3 fst-italic">
+                        <div class="festive-divider my-2"></div>
+
+                        <!-- Special Tribute QR Box -->
+                        <div class="my-2 p-2 bg-white rounded-3 shadow-sm d-inline-block border border-2 border-warning">
+                            <img src="{% static 'images/special_tribute_qr.png' %}" alt="Special Tribute QR" class="img-fluid rounded" style="width: 130px; height: 130px; object-fit: contain; display: block;">
+                        </div>
+                        <div class="small fw-semibold text-warning mb-2">
+                            <i class="bi bi-qr-code-scan me-1"></i>Scan for Special Tribute
+                        </div>
+
+                        <p class="small text-white-50 mb-2 fst-italic" style="font-size: 0.78rem; line-height: 1.35;">
                             &ldquo;Teaching is the one profession that creates all other professions.&rdquo;
                         </p>
                     </div>
-                    <div class="mt-auto pt-2">
-                        <div class="p-2 rounded bg-white bg-opacity-10 border border-warning border-opacity-25 small text-white-50">
+                    <div class="mt-auto pt-1">
+                        <div class="p-2 rounded bg-white bg-opacity-10 border border-warning border-opacity-25 small text-white-50" style="font-size: 0.76rem;">
                             <i class="bi bi-flower1 text-warning me-1"></i>With eternal gratitude from all students &amp; alumni.
                         </div>
                     </div>
@@ -77,12 +83,18 @@
             <!-- Mobile Banner (Shows below video on small screens) -->
             <div class="col-12 d-lg-none mt-2">
                 <div class="teachers-card-mobile p-3 text-center shadow-sm">
-                    <h5 class="fw-bold text-white mb-1">
-                        <i class="bi bi-mortarboard-fill text-warning me-2"></i>Happy Teachers' Day! 🎓
-                    </h5>
-                    <p class="small text-white-50 mb-0">
-                        Dedicated with deepest respect, admiration, and gratitude to all our Teachers &amp; Professors.
-                    </p>
+                    <div class="d-flex align-items-center justify-content-center gap-3">
+                        <img src="{% static 'images/special_tribute_qr.png' %}" alt="Special Tribute QR" class="img-fluid rounded bg-white p-1 border border-warning" style="width: 70px; height: 70px; object-fit: contain;">
+                        <div class="text-start">
+                            <span class="badge bg-warning text-dark px-2 py-0 fw-bold small">Special Tribute</span>
+                            <h5 class="fw-bold text-white mb-1 mt-1">
+                                <i class="bi bi-mortarboard-fill text-warning me-1"></i>Happy Teachers' Day! 🎓
+                            </h5>
+                            <p class="small text-white-50 mb-0">
+                                Scan QR code or dedicate your highest respect &amp; gratitude to all faculty.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
