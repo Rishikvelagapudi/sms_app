@@ -239,6 +239,18 @@ video::-moz-media-controls-fullscreen-button {
     font-weight: 600;
 }
 
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.border-primary {
+    border-color: var(--primary) !important;
+}
+
 .btn-primary {
     background-color: var(--primary);
     border-color: var(--primary);
